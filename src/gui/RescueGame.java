@@ -1,6 +1,10 @@
 package gui;
 
-import gui.decoration.Background;
+/**********************************************
+                Rescue Mission Game
+                   Nir Kaizler
+                    Enjoy (;
+ *********************************************/
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
@@ -14,7 +18,7 @@ public class RescueGame extends JFrame{
     }
 
     private void initUI() {
-        add(new Background(SCREEN_WIDTH, SCREEN_HEIGHT));
+        add(new GameScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
 
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         setResizable(false);

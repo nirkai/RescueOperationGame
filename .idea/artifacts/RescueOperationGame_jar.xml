@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RescueOperationGame:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RescueOperationGame_jar</output-path>
+    <root id="archive" name="RescueOperationGame.jar">
+      <element id="module-output" name="RescueOperationGame" />
+      <element id="directory" name="resources">
+        <element id="file-copy" path="$PROJECT_DIR$/resources/background.png" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/boat.png" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/parachutist.png" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/plane.png" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/sea.png" />
+      </element>
+    </root>
+  </artifact>
+</component>

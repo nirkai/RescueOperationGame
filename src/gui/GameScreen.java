@@ -1,4 +1,4 @@
-package gui.decoration;
+package gui;
 
 import components.bl.BAirplane;
 import components.bl.BParachutist;
@@ -19,45 +19,48 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-
-public class Background extends JPanel implements ActionListener {
+/**
+ * Class that manages the game play
+ */
+public class GameScreen extends JPanel implements ActionListener {
 
     private static Random random;
     private  int SCREEN_WIDTH;
     private  int SCREEN_HEIGHT;
     private Image backgroundImage;
     private Image sea;
-    private final int DELAY = 15;
+    private final int DELAY = 18;
     private Timer timer;
     private Ship ship;
     private Airplane plane;
     private AirTransport transport;
     private int life;
-    int score;
+    private int score;
 
-    public Background(int screen_width, int screen_height) {
+    public GameScreen(int screen_width, int screen_height) {
         SCREEN_WIDTH = screen_width;
         SCREEN_HEIGHT = screen_height;
         random = new Random();
         life = 3;
         score = 10;
 
-        initBackground();
+        initGameResources();
 
         timer = new Timer(DELAY, this);
         timer.start();
     }
 
-    private void initBackground() {
+    private void initGameResources() {
         this.setFocusable(true);
         this.requestFocus();
 
         addKeyListener(new TAdapter());
 
-        // init play screen
+        //   init play screen
         try {
-            backgroundImage = ImageIO.read(new File("src/resources/background.png"));
-            sea = ImageIO.read(new File("src/resources/sea.png"));
+            String dir = System.getProperty("user.dir");
+            backgroundImage = ImageIO.read(new File(dir + "/resources/background.png"));
+            sea = ImageIO.read(new File(dir + "/resources/sea.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,33 +121,40 @@ public class Background extends JPanel implements ActionListener {
             transport.setPlane(plane = new BAirplane(SCREEN_WIDTH, SCREEN_HEIGHT));
             int max_parachutists_in_transport = 3;
             for (int i = 0; i < random.nextInt(max_parachutists_in_transport); i++){
-
-                transport.add_parachutist(new BParachutist(random.nextInt(SCREEN_WIDTH - 20) + 10, plane.getY_axis()));
+                transport.add_parachutist(new BParachutist(
+                        random.nextInt(SCREEN_WIDTH - 20) + 10, plane.getY_axis()));
             }
         }
     }
 
-    public void updateParachutistJump(){
+    private void updateParachutistJump(){
+        int disqualification_point = SCREEN_HEIGHT - sea.getHeight(null) / 2;
+
         for (Iterator<Parachutist> it = transport.getJumper_parachutists().iterator(); it.hasNext(); ) {
             Parachutist parachutist1 = it.next();
             parachutist1.fall();
+
             // check if the parachutist in the borders of the boat or if it height is too low.
             if (!(ship.getX_axis() > parachutist1.getX_axis() + parachutist1.getWidth() ||
-                    parachutist1.getX_axis() > ship.getX_axis() + ship.getWidth()) && ship.getY_axis() <= parachutist1.getY_axis() + parachutist1.getHeight()) {
+                        parachutist1.getX_axis() > ship.getX_axis() + ship.getWidth()) &&
+                    ship.getY_axis() <= parachutist1.getY_axis() + parachutist1.getHeight()) {
                 it.remove();
                 score += 10;
             }
-            else if(parachutist1.getY_axis() + parachutist1.getHeight() > SCREEN_HEIGHT - sea.getHeight(null) / 2)
+            else if(parachutist1.getY_axis() + parachutist1.getHeight() > disqualification_point)
                 disqualification();
         }
     }
 
     private void disqualification(){
         life--;
-        if (life < 0)
+        if (life <= 0)
             gameOver();
-        else
-            this.initBackground();
+        else {
+            this.initGameResources();
+            this.initComponents();
+        }
+
     }
 
     private void gameOver() {
